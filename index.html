@@ -3,18 +3,112 @@
 <head>
   <link rel="stylesheet" href="css/mainScreen.css">
   <script src="js/main.js"></script>
+  <title>NASA Image Search</title>
 </head>
 <body>
-
-<h2>A Prototype Search Web App</h2>
-
+  <ul>
+  <li><a href="index.html"><img src="images/home.png" alt="Home icon" width="14px" height="14px"> Home</a></li>
+  <li><a href="favorites.html"><img src="images/favorite.png" alt="Favorites icon" width="16px" height="14px"> Favorites</a></li>
+</ul>
+<h2>NASA Image Search</h2>
+<div style="text-align: center"><img id="logo" src="images/nasa_logo.png" alt="NASA logo" width="175" height="150"></div>
 <p id="demo"></p>
 
-<input type="text" id="searchInput" placeholder="Search for...">
- <button type="submit" onclick="myFunction()">Search</button>
+  <div class="search" style="text-align: center">
+    <input type="text" id="searchBar" placeholder="Search for..." style="text-align: left"></input>
+    <button type="button" id="image" onclick="imageSearch()">&nbsp<img src="images/camera.png" alt="Camera icon" width="16" height="16"> Images&nbsp</button>
+    <button type="button" id="video" onclick="videoSearch()">&nbsp<img src="images/video.png" alt="Video icon" width="16" height="16"> Videos&nbsp</button>
+    <button type="button" id="audio" onclick="audioSearch()">&nbsp<img src="images/audio.png" alt="Audio icon" width="16" height="16"> Audios&nbsp</button>
+  </div>
 
-<p id="results">
+  <div class="search_options" style="width: 175px">
+    <p><img src="images/calendar.png" alt="Calendar Icon" width="16" height="16"> Date Range</p>
+    <div id="calendar">
+      <p>Start: <input id="startDate" type="date" ></p>
+      <p>End: <input id="endDate" type="date" onclick></p>
+      <p><button type="submit">Submit Date</button></p>
+    </div>
+    <p><img src="images/location.png" alt="Location Icon" width="16" height="16"> Location</p>
+    <div>
+      <select id="location" style="width: 150px">
+        <option value="select">Select location...</option>
+        <option value="hangar2">01726 Hangar S</option>
+        <option value="afrc">AFRC</option>
+        <option value="alabama">Alabama A&M University</option>
+        <option value="research2">Ames Research Center</option>
+        <option value="uss">Around the USS John P. Murtha</option>
+        <option value="asoc">ASOC, Cape Canaveral Air Force S</option>
+        <option value="payload">Bldg. 4663, Payload Operations i</option>
+        <option value="canaveral">Cape Canaveral, FL</option>
+        <option value="charles">Charles M. Schulz Sonoma County </option>
+        <option value="ohio">Cleveland, Ohio</option>
+        <option value="cmdrs">Cmdrs Bldg, Cape Canaveral Air F</option>
+        <option value="cx5">CX-5, Cape Canaveral Air Force S</option>
+        <option value="cx17">CX17-B, Cape Canaveral Air Force</option>
+        <option value="eo">E&O Building</option>
+        <option value="edwards">Edwards, CA, USA</option>
+        <option value="morial">Ernest N. Morial Convention Center\u200e, New Orleans, Louisiana</option>
+        <option value="csg">Europe's space port,CSG,French G</option>
+        <option value="g">%G</option>
+        <option value="flight">Goddard Space Flight Center</option>
+        <option value="greenbelt">Greenbelt, MD</option>
+        <option value="hangar">Hangar M Annex</option>
+        <option value="kennedy5">Hangar N, Kennedy Space Center</option>
+        <option value="kennedy7">Headquarters Building, Kennedy S, FL</option>
+        <option value="huntsville2">HUNTSVILLE, ALABAMA BIG SPRING P</option>
+        <option value="jima">Iwo Jima Memorial</option>
+        <option value="iss">ISS</option>
+        <option value="james">James E. Webb Auditorium</option>
+        <option value="kennedy4">John F. Kennedy Center for the P</option>
+        <option value="kennedy3">John F. Kennedy International Ai</option>
+        <option value="john">John P. Murtha</option>
+        <option value="jsc">JSC</option>
+        <option value="kars">Kars Park I</option>
+        <option value="kennedy">Kennedy Space Center</option>
+        <option value="kennedy2">Kennedy Space Center, FL</option>
+        <option value="ksc">KSC - O&C, Building S</option>
+        <option value="ksc2">KSC - Saturn V Facility</option>
+        <option value="launch">Launch Pad facilities, Kennedy S</option>
+        <option value="lockheed">Lockheed Martin?s Global Vision</option>
+        <option value="msfc">MSFC</option>
+        <option value="huntsville">MSFC, Huntsville,AL</option>
+        <option value="kennedy6">N End of SLF, Kennedy Space Cent, FL</option>
+        <option value="research">NASA Ames Research Center</option>
+        <option value="armstrong">NASA Armstrong Flight Research Center, Edwards, CA</option>
+        <option value="hq">NASA Headquarters</option>
+        <option value="hq2">NASA HQ, 300 E St. SW</option>
+        <option value="langley">NASA Langley Research Center</option>
+        <option value="michoud">NASA Michoud</option>
+        <option value="resident">NASA Resident Office</option>
+        <option value="stennis">NASA Stennis Space Center</option>
+        <option value="notu">NOTU Berm, Canaveral Air Force S, FL</option>
+        <option value="oc">O&C</option>
+        <option value="atk">Orbital ATK Propulsion Systems T</option>
+        <option value="operations">Operations Support Building I</option>
+        <option value="osb">OSB I Roof</option>
+        <option value="pad">Pad B, Crawlerway</option>
+        <option value="reuben">Reuben H. Fleet Science Center, </option>
+        <option value="rotation">Rotation, Processing, and Surge F</option>
+        <option value="satern2">Satern V Bldg</option>
+        <option value="satern">Satern V Center</option>
+        <option value="saturn2">Saturn V Building</option>
+        <option value="saturn">Saturn V Facility</option>
+        <option value="slc">SLC-2</option>
+        <option value="steven">Steven F. Udvar-Hazy Center</option>
+        <option value="training">Training Auditorium</option>
+        <option value="union">Union Station</option>
+        <option value="uss">USS John P. Murtha</option>
+        <option value="vab">VAB</option>
+        <option value="vandenberg">Vandenberg Air Force Base, CA, USA</option>
+        <option value="vertical">Vertical Integration Facility (V</option>
+        <option value="vif">VIF, CX-41, Cape Canaveral Air F</option>
+        <option value="walter">Walter E. Washington Convention</option>
+      </select>
+    </div>
 
+  </div>
+
+<p id="results" style="margin-left: 200px">
 </p>
 
 </body>
