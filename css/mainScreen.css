@@ -67,7 +67,16 @@ li a:hover {
   height: 175px;
 }
 
-#info {
+#vidThumb {
+  float: left;
+  margin-right: 10px;
+  border: solid black 1px;
+  padding: 2px;
+  width: 175px;
+  height: 175px;
+}
+
+.info {
   height: 225px;
   width: auto;
   margin-right: 100px;
@@ -100,10 +109,6 @@ li a:hover {
   display: block;
 }
 
-#calendar p {
-  font-size: 14px;
-}
-
 .heart {
   width: 40px;
   height: 40px;
@@ -111,4 +116,8 @@ li a:hover {
 
 .heart:hover {
   cursor: pointer;
+}
+
+#size, #locate {
+  visibility: hidden;
 }
