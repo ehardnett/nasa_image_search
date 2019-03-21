@@ -17,7 +17,7 @@ try {
 }
 
 if (sessionAvail == false || localAvail == false) {
-  document.getElementById("storage").innerHTML = "<p><strong>NOTICE: This browser does not support a storage component. Because of this, the \'Favorites\' Page will not work. For full capability, use Google Chrome.</strong></p>";
+  document.getElementById("storage").innerHTML = "<p><strong>NOTICE: This browser does not support a storage component. Because of this, the \'Favorites\' Page will not work. For full capability, use Google Chrome or Firefox.</strong></p>";
 } else {
   var favSources = [];
   loadPage();
