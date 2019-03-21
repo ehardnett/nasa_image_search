@@ -121,3 +121,8 @@ li a:hover {
 #size, #locate {
   visibility: hidden;
 }
+
+#storage {
+  text-align: center;
+  background-color: #FFFACD;
+}

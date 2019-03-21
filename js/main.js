@@ -1,3 +1,25 @@
+var localAvail;
+var sessionAvail;
+try {
+  localStorage.setItem('test', "test");
+  localStorage.removeItem('test');
+  localAvail = true;
+} catch(ex) {
+  localAvail = false;
+}
+
+try {
+  sessionStorage.setItem('test', "test");
+  sessionStorage.removeItem('test');
+  sessionAvail = true;
+} catch(ex) {
+  sessionAvail = false;
+}
+
+if (sessionAvail == false || localAvail == false) {
+  document.getElementById("storage").innerHTML = "<p><strong>NOTICE: This browser does not support a storage component. Because of this, the \'Favorites\' Page will not work. For full capability, use Google Chrome.</strong></p>";
+}
+
 var favoriteImgs = [];
 var currentPage = [];
 function videoSearch() {
@@ -44,52 +66,69 @@ function videoSearch() {
       // loop to go through the responses of the url
       for (var i = 0; i < obj.collection.items.length; i++) {
         var dateStr = obj.collection.items[i].data[0].date_created;
-        console.log(dateStr);
         var inRange = checkDate(startInput, endInput, dateStr);
 
         if (dateFilter == false || (dateFilter == true && inRange == true)){
-          var video = document.createElement("IMG")
+          var video = document.createElement("IMG");
           video.setAttribute("src", obj.collection.items[i].links[0].href);
-          console.log(video.src);
           video.setAttribute("alt", obj.collection.items[i].data[0].title);
 
           const vid = new XMLHttpRequest();
           var videoUrl = obj.collection.items[i].href;
           var videoJson = accessUrl(vid, videoUrl);
-          //var vidResponse = escapeSpecialChars(videoJson);
-          vidObj = JSON.parse(videoJson);
-          videoUrl = vidObj[0];
-          document.getElementById("results").innerHTML += "<a href= " + encodeURI(videoUrl) + "><img id=thumbnail src=" + video.src + "></a><p>";
-
+          if (videoJson != undefined) {
+            vidObj = JSON.parse(videoJson);
+            videoUrl = vidObj[0];
+            if (video.src == undefined) {
+              document.getElementById("results").innerHTML += "<a href= " + encodeURI(videoUrl) + "><img id=thumbnail src=images/video-not-found.png></a><p>";
+            } else {
+              document.getElementById("results").innerHTML += "<a href= " + encodeURI(videoUrl) + "><img id=thumbnail src=" + video.src + "></a><p>";
+            }
+          } else {
+            if (video.src == undefined) {
+              document.getElementById("results").innerHTML += "<img id=thumbnail onclick=unavailable(); src=images/video-not-found.png></a><p>";
+            } else {
+              document.getElementById("results").innerHTML += "<img id=thumbnail onclick=unavailable(); src=" + video.src + "></a><p>";
+            }
+          }
           var finalDescription = cutDescription(obj, i);
 
           var info = {id: dateStr, pic: video.src, title: video.alt, describe: finalDescription, url: videoUrl, thumb: "", heart: "images/heart-gray.png", media: "video", location: obj.collection.items[i].data[0].location, date: obj.collection.items[i].data[0].date_created};
           var liked = {id: dateStr, pic: video.src, title: video.alt, describe: finalDescription, url: videoUrl, thumb: "", heart: "images/heart-red.png", media: "video", location: obj.collection.items[i].data[0].location, date: obj.collection.items[i].data[0].date_created};
-          var inStorage = JSON.parse(localStorage.getItem("list"));
+          if (localAvail == true) {
+            var inStorage = JSON.parse(localStorage.getItem("list"));
 
-          if (inStorage != null) {
-            var index = -1;
-            for (var j = 0; j < inStorage.length; j++) {
-              var source = inStorage[j];
-              if (info.id == source.id) {
-                index = j;
+            if (inStorage != null) {
+              var index = -1;
+              for (var j = 0; j < inStorage.length; j++) {
+                var source = inStorage[j];
+                if (info.id == source.id) {
+                  index = j;
+                }
+              }
+            if (sessionAvail == true) {
+              if (index == -1) {
+                sessionStorage.setItem(dateStr, JSON.stringify(info));
+                document.getElementById("results").innerHTML += "<div class=info><strong>" + info.title + "</strong><p><i>" + info.describe + "</i><p><img id=" + info.id +" class=heart src=\"" + info.heart +"\" onclick=addToFavorites(\"" + info.id + "\");></p>";
+                currentPage.push(info);
+              } else {
+                sessionStorage.setItem(dateStr, JSON.stringify(liked));
+                document.getElementById("results").innerHTML += "<div class=info><strong>" + liked.title + "</strong><p><i>" + liked.describe + "</i><p><img id=" + liked.id +" class=heart src=\"" + liked.heart +"\" onclick=addToFavorites(\"" + liked.id + "\");></p>";
+                currentPage.push(liked);
               }
             }
-
-            if (index == -1) {
-              sessionStorage.setItem(dateStr, JSON.stringify(info));
-              document.getElementById("results").innerHTML += "<div class=info><strong>" + info.title + "</strong><p><i>" + info.describe + "</i><p><img id=" + info.id +" class=heart src=\"" + info.heart +"\" onclick=addToFavorites(\"" + info.id + "\");></p>";
-              currentPage.push(info);
-            } else {
-              sessionStorage.setItem(dateStr, JSON.stringify(liked));
-              document.getElementById("results").innerHTML += "<div class=info><strong>" + liked.title + "</strong><p><i>" + liked.describe + "</i><p><img id=" + liked.id +" class=heart src=\"" + liked.heart +"\" onclick=addToFavorites(\"" + liked.id + "\");></p>";
-              currentPage.push(liked);
-            }
           } else {
-            sessionStorage.setItem(dateStr, JSON.stringify(info));
-            document.getElementById("results").innerHTML += "<div class=info><strong>" + video.alt + "</strong><p><i>" + finalDescription + "</i><p><img id=" + dateStr +" class=heart src=" + info.heart +" onclick=addToFavorites(\"" + dateStr + "\");></p>";
-            currentPage.push(info);
+            if (sessionAvail == true) {
+              sessionStorage.setItem(dateStr, JSON.stringify(info));
+              document.getElementById("results").innerHTML += "<div class=info><strong>" + video.alt + "</strong><p><i>" + finalDescription + "</i><p><img id=" + dateStr +" class=heart src=" + info.heart +" onclick=addToFavorites(\"" + dateStr + "\");></p>";
+              currentPage.push(info);
+            }
           }
+
+        } else {
+          document.getElementById("results").innerHTML += "<div class=info><strong>" + info.title + "</strong><p><i>" + info.describe + "</i></p>";
+          currentPage.push(info);
+        }
     }
   }
   sessionStorage.setItem("current", JSON.stringify(currentPage));
@@ -163,42 +202,59 @@ function imageSearch() {
             const img = new XMLHttpRequest();
             var imageUrl = obj.collection.items[i].href;
             var imageJson = accessUrl(img, imageUrl);
-            imgObj = JSON.parse(imageJson);
-            imageUrl = imgObj[0];
-            document.getElementById("results").innerHTML += "<a href=" + imageUrl + "><img id=thumbnail src=" + image.src + "><p>";
-
+            if (imageJson != undefined) {
+              imgObj = JSON.parse(imageJson);
+              imageUrl = imgObj[0];
+              if (image.src == undefined) {
+                document.getElementById("results").innerHTML += "<a href=" + imageUrl + "><img id=thumbnail src=images/image-not-available.jpg><p>";
+              } else {
+                document.getElementById("results").innerHTML += "<a href=" + imageUrl + "><img id=thumbnail src=" + image.src + "><p>";
+              }
+            } else {
+              if (image.src == undefined) {
+                document.getElementById("results").innerHTML += "<img id=thumbnail onclick=unavailable(); src=images/image-not-found><p>";
+              } else {
+                document.getElementById("results").innerHTML += "<img id=thumbnail onclick=unavailable(); src=" + image.src + "><p>";
+              }
+            }
             if (i < (obj.collection.items.length - 1)) {
               thumbnails += addThumbnails(obj, i, imageUrl, imageTitles);
             }
 
             var info = {id: obj.collection.items[i].data[0].nasa_id, pic: image.src, title: image.alt, describe: finalDescription, thumb: thumbnails, url: imageUrl, heart: "images/heart-gray.png", media: "image", location: obj.collection.items[i].data[0].location, date: dateStr};
             var liked = {id: obj.collection.items[i].data[0].nasa_id, pic: image.src, title: image.alt, describe: finalDescription, thumb: thumbnails, url: imageUrl, heart: "images/heart-red.png", media: "image", location: obj.collection.items[i].data[0].location, date: dateStr};
-            var inStorage = JSON.parse(localStorage.getItem("list"));
-
-            if (inStorage != null) {
-              var index = -1;
-              for (var j = 0; j < inStorage.length; j++) {
-                var source = inStorage[j];
-                if (info.id == source.id) {
-                  index = j;
+            if (localAvail == true) {
+              var inStorage = JSON.parse(localStorage.getItem("list"));
+              if (inStorage != null) {
+                var index = -1;
+                for (var j = 0; j < inStorage.length; j++) {
+                  var source = inStorage[j];
+                  if (info.id == source.id) {
+                    index = j;
+                  }
+                }
+                if (sessionAvail == true) {
+                  if (index == -1) {
+                    sessionStorage.setItem(obj.collection.items[i].data[0].nasa_id, JSON.stringify(info));
+                    document.getElementById("results").innerHTML += "<div class=info><strong>" + info.title + "</strong><p><i>" + info.describe + "</i><p>" + info.thumb + "<p><img id=" + info.id +" class=heart src=" + info.heart +" onclick=addToFavorites(\"" + info.id + "\");></p>";
+                    currentPage.push(info);
+                  } else {
+                    sessionStorage.setItem(obj.collection.items[i].data[0].nasa_id, JSON.stringify(liked));
+                    document.getElementById("results").innerHTML += "<div class=info><strong>" + liked.title + "</strong><p><i>" + liked.describe + "</i><p>" + liked.thumb + "<p><img id=" + liked.id +" class=heart src=" + liked.heart +" onclick=addToFavorites(\"" + liked.id + "\");></p>";
+                    currentPage.push(liked);
+                  }
+                }
+              } else {
+                if (sessionAvail == true) {
+                  sessionStorage.setItem( obj.collection.items[i].data[0].nasa_id, JSON.stringify(info));
+                  document.getElementById("results").innerHTML += "<div class=info><strong>" + image.alt + "</strong><p><i>" + finalDescription + "</i><p>" + thumbnails + "<p><img id=" + dateStr +" class=heart src=" + info.heart +" onclick=addToFavorites(\"" + obj.collection.items[i].data[0].nasa_id + "\");></p>";
+                  currentPage.push(info);
                 }
               }
-
-              if (index == -1) {
-                sessionStorage.setItem(obj.collection.items[i].data[0].nasa_id, JSON.stringify(info));
-                document.getElementById("results").innerHTML += "<div class=info><strong>" + info.title + "</strong><p><i>" + info.describe + "</i><p>" + info.thumb + "<img id=" + info.id +" class=heart src=" + info.heart +" onclick=addToFavorites(\"" + info.id + "\");></p>";
-                currentPage.push(info);
-              } else {
-                sessionStorage.setItem(obj.collection.items[i].data[0].nasa_id, JSON.stringify(liked));
-                document.getElementById("results").innerHTML += "<div class=info><strong>" + liked.title + "</strong><p><i>" + liked.describe + "</i><p>" + liked.thumb + "<p><img id=" + liked.id +" class=heart src=" + liked.heart +" onclick=addToFavorites(\"" + liked.id + "\");></p>";
-                currentPage.push(liked);
-              }
             } else {
-              sessionStorage.setItem( obj.collection.items[i].data[0].nasa_id, JSON.stringify(info));
-              document.getElementById("results").innerHTML += "<div class=info><strong>" + image.alt + "</strong><p><i>" + finalDescription + "</i><p>" + thumbnails + "<p><img id=" + dateStr +" class=heart src=" + info.heart +" onclick=addToFavorites(\"" + obj.collection.items[i].data[0].nasa_id + "\");></p>";
+              document.getElementById("results").innerHTML += "<div class=info><strong>" + image.alt + "</strong><p><i>" + finalDescription + "</i><p>" + thumbnails + "</p>";
               currentPage.push(info);
             }
-
         }
 
         }
@@ -263,43 +319,58 @@ function audioSearch() {
             var audioUrl = obj.collection.items[i].href;
             const aud = new XMLHttpRequest();
 
-                  var audioJson = accessUrl(aud, audioUrl);
-                  audObj = JSON.parse(audioJson);
-                  audioUrl = audObj[0];
-                  document.getElementById("results").innerHTML += "<a href=" + encodeURI(audioUrl) +"><img id=" + audio.id + " src=" + audio.src + "></a><p>";
+            var audioJson = accessUrl(aud, audioUrl);
+            if (audioJson != undefined) {
+              audObj = JSON.parse(audioJson);
+              audioUrl = audObj[0];
+              document.getElementById("results").innerHTML += "<a href=" + encodeURI(audioUrl) +"><img id=" + audio.id + " src=" + audio.src + "></a><p>";
+            } else {
+              document.getElementById("results").innerHTML += "<img id=" + audio.id + " onclick=unavailable(); src=" + audio.src + "></a><p>";
+            }
+            var finalDescription = cutDescription(obj, i);
 
-                  var finalDescription = cutDescription(obj, i);
-
-                  var info = {id: dateStr, pic: audio.src, title: audio.alt, describe: finalDescription, url: audioUrl, thumb: "", heart: "images/heart-gray.png", media: "audio", location: "", date: dateStr};
-                  var liked = {id: dateStr, pic: audio.src, title: audio.alt, describe: finalDescription, url: audioUrl, thumb: "", heart: "images/heart-red.png", media: "audio", location: "", date: dateStr};
-                  var inStorage = JSON.parse(localStorage.getItem("list"));
-
-                  if (inStorage != null) {
-                    var index = -1;
-                    for (var j = 0; j < inStorage.length; j++) {
-                      var source = inStorage[j];
-                      if (info.id == source.id) {
-                        index = j;
-                      }
-                    }
-
-                    if (index == -1) {
-                      sessionStorage.setItem(dateStr, JSON.stringify(info));
-                      document.getElementById("results").innerHTML += "<div class=info><strong>" + info.title + "</strong><p><i>" + info.describe + "</i><p><img id=" + info.id +" class=heart src=" + info.heart +" onclick=addToFavorites(\"" + info.id + "\");></p>";
-                      currentPage.push(info);
-                    } else {
-                      sessionStorage.setItem(dateStr, JSON.stringify(liked));
-                      document.getElementById("results").innerHTML += "<div class=info><strong>" + liked.title + "</strong><p><i>" + liked.describe + "</i><p><img id=" + liked.id +" class=heart src=" + liked.heart +" onclick=addToFavorites(\"" + liked.id + "\");></p>";
-                      currentPage.push(liked);
-                    }
-                  } else {
-                    sessionStorage.setItem(dateStr, JSON.stringify(info));
-                    document.getElementById("results").innerHTML += "<div class=info><strong>" + audio.alt + "</strong><p><i>" + finalDescription + "</i><p><img id=" + dateStr +" class=heart src=" + info.heart +" onclick=addToFavorites(\"" + dateStr + "\");></p>";
-                    currentPage.push(info);
+            var info = {id: dateStr, pic: audio.src, title: audio.alt, describe: finalDescription, url: audioUrl, thumb: "", heart: "images/heart-gray.png", media: "audio", location: "", date: dateStr};
+            var liked = {id: dateStr, pic: audio.src, title: audio.alt, describe: finalDescription, url: audioUrl, thumb: "", heart: "images/heart-red.png", media: "audio", location: "", date: dateStr};
+            if (localAvail == true) {
+              var inStorage = JSON.parse(localStorage.getItem("list"));
+              if (inStorage != null) {
+                var index = -1;
+                for (var j = 0; j < inStorage.length; j++) {
+                  var source = inStorage[j];
+                  if (info.id == source.id) {
+                    index = j;
                   }
+                }
+
+                if (sessionAvail == true) {
+                  if (index == -1) {
+                    sessionStorage.setItem(dateStr, JSON.stringify(info));
+                    document.getElementById("results").innerHTML += "<div class=info><strong>" + info.title + "</strong><p><i>" + info.describe + "</i><p><img id=" + info.id +" class=heart src=" + info.heart +" onclick=addToFavorites(\"" + info.id + "\");></p>";
+                    currentPage.push(info);
+                  } else {
+                    sessionStorage.setItem(dateStr, JSON.stringify(liked));
+                    document.getElementById("results").innerHTML += "<div class=info><strong>" + liked.title + "</strong><p><i>" + liked.describe + "</i><p><img id=" + liked.id +" class=heart src=" + liked.heart +" onclick=addToFavorites(\"" + liked.id + "\");></p>";
+                    currentPage.push(liked);
+                  }
+                }
+              } else {
+                if (sessionAvail == true) {
+                  sessionStorage.setItem(dateStr, JSON.stringify(info));
+                  document.getElementById("results").innerHTML += "<div class=info><strong>" + audio.alt + "</strong><p><i>" + finalDescription + "</i><p><img id=" + dateStr +" class=heart src=" + info.heart +" onclick=addToFavorites(\"" + dateStr + "\");></p>";
+                  currentPage.push(info);
+                }
+              }
+            } else {
+              document.getElementById("results").innerHTML += "<div class=info><strong>" + audio.alt + "</strong><p><i>" + finalDescription + "</i></p>";
+              currentPage.push(info);
+            }
+
+
             }
           }
-          sessionStorage.setItem("current", JSON.stringify(currentPage));
+          if (sessionAvail == true) {
+            sessionStorage.setItem("current", JSON.stringify(currentPage));
+          }
           } else {
             var code = handleErrors(status);
             document.getElementById("results") += "<h2>" + code;
@@ -310,13 +381,15 @@ function audioSearch() {
 
 function accessUrl(Http, url) {
   Http.open("GET", url, false);
-  Http.send( null );
-  return Http.responseText;
+  if (Http.status >= 200 && Http.status <= 299) {
+    Http.send( null );
+    return Http.responseText;
+  }
+  return undefined;
 }
 
 function cutDescription(obj, i) {
   var initDescription = obj.collection.items[i].data[0].description;
-  console.log(initDescription);
   var finalDescription = "No description found.";
   if (initDescription != undefined) {
     if (initDescription.length > 300){
@@ -478,4 +551,8 @@ function reloadPage() {
       }
     }
   }
+}
+
+function unavailable() {
+  alert("Source is unavailable");
 }

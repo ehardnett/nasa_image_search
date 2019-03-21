@@ -1,5 +1,28 @@
-var favSources = [];
-loadPage();
+var localAvail;
+var sessionAvail;
+try {
+  localStorage.setItem('test', "test");
+  localStorage.removeItem('test');
+  localAvail = true;
+} catch(ex) {
+  localAvail = false;
+}
+
+try {
+  sessionStorage.setItem('test', "test");
+  sessionStorage.removeItem('test');
+  sessionAvail = true;
+} catch(ex) {
+  sessionAvail = false;
+}
+
+if (sessionAvail == false || localAvail == false) {
+  document.getElementById("storage").innerHTML = "<p><strong>NOTICE: This browser does not support a storage component. Because of this, the \'Favorites\' Page will not work. For full capability, use Google Chrome.</strong></p>";
+} else {
+  var favSources = [];
+  loadPage();
+}
+
 function loadPage() {
   var results = JSON.parse(localStorage.getItem("list"));
   console.log(results);
