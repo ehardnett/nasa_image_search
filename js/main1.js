@@ -506,7 +506,7 @@ function displayList() {
       var info = currentPage[i];
       var newTitle = changeTitle(info.title);
       document.getElementById("results").innerHTML += "<a href= " + encodeURI(info.url) + "><img id=thumbnail src=" + info.pic + "></a><p>";
-      document.getElementById("results").innerHTML += "<div class=info><strong>" + info.title + "</strong><p><i>" + info.describe + "</i><p><img id=" + info.id +" class=heart src=\"" + info.heart +"\" onclick=addToFavorites(\"" + info.id + "\");></p>";
+      document.getElementById("results").innerHTML += "<div class=info><strong>" + newTitle + "</strong><p><i>" + info.describe + "</i><p><img id=" + info.id +" class=heart src=\"" + info.heart +"\" onclick=addToFavorites(\"" + info.id + "\");></p>";
     }
     document.getElementById("rocket").style.visibility = "hidden";
     inGrid = false;
