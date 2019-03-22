@@ -7,6 +7,7 @@
   border: 1px solid #ddd;
   margin-bottom: 12px;
   display: block;
+  margin-left: 200px;
   margin: 0 auto;
 }
 
@@ -88,25 +89,31 @@ li a:hover {
 }
 
 .search_options {
-  margin-top: 400px;
-  height: 100%;
-  width: 170px;
-  position: absolute;
+  margin-top: 200px;
+  width: 150px;
+  position: fixed;
   z-index: 1;
   top: 0;
   left: 0;
   background-color: #111;
   overflow-x: hidden;
   padding-top: 20px;
+  margin-bottom: 125px;
+  overflow: auto;
+  height: 300px;
 }
 
 .search_options p {
-  padding: 6px 8px 6px 16px;
+  padding: 2px 8px 2px 16px;
   text-decoration: none;
   font-family: monospace;
-  font-size: 16px;
+  font-size: 14px;
   color: #fff;
   display: block;
+}
+
+.search_options img:hover {
+  cursor: pointer;
 }
 
 .heart {
@@ -125,4 +132,72 @@ li a:hover {
 #storage {
   text-align: center;
   background-color: #FFFACD;
+}
+
+#rocket {
+  width: 50px;
+  height: 50px;
+  visibility: hidden;
+}
+
+#search {
+  text-align: center;
+}
+
+#footer {
+  background-color: #000;
+  position: absolute;
+  width: 100%;
+  color: white;
+  font-style: normal;
+  font-family: monospace;
+  font-size: 14px;
+}
+
+#grid {
+  margin-right: 10px;
+  border: solid black 1px;
+  padding: 2px;
+  width: 175px;
+  height: 175px;
+}
+
+.gridView {
+  display: inline-grid;
+  width: 200px;
+  height: 300px;
+  padding: 5px;
+  border: solid gray 5px;
+  margin-bottom: 3px;
+}
+
+#results {
+  display: block;
+  margin-left: 200px;
+  margin-bottom: 100px;
+  padding-bottom: 100px;
+  height: auto;
+}
+
+#view {
+  background-color: inherit;
+  color: white;
+  font-family: monospace;
+  border-radius: 12px;
+  border: solid white 1px;
+  margin: 2px;
+  align-content: center;
+}
+
+#refine {
+  border-radius: 5px;
+  border: solid gray 2px;
+  background-color: white;
+  color: black;
+  font-family: monospace;
+  margin: 10px;
+}
+
+#startDate, #endDate {
+  width: 150px;
 }

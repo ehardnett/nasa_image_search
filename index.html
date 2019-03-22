@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html onload="loadImgs()">
+<html>
 <head>
   <div id="storage"></div>
   <link rel="stylesheet" href="css/mainScreen.css">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <script src="js/main.js"></script>
+  <script src="js/main1.js"></script>
   <title>NASA Image Search</title>
 </head>
 <body>
@@ -17,16 +16,19 @@
 <p id="demo"></p>
 
   <div class="search" style="text-align: center">
-    <input type="text" id="searchBar" placeholder="Search for..." style="text-align: left"></input>
+    <input spellcheck="true" type="text" id="searchBar" placeholder="Keyword search for..." style="text-align: left"></input>
     <button type="button" id="image" onclick="imageSearch()">&nbsp<img src="images/camera.png" alt="Camera icon" width="16" height="16"> Images&nbsp</button>
     <button type="button" id="video" onclick="videoSearch()">&nbsp<img src="images/video.png" alt="Video icon" width="16" height="16"> Videos&nbsp</button>
     <button type="button" id="audio" onclick="audioSearch()">&nbsp<img src="images/audio.png" alt="Audio icon" width="16" height="16"> Audio&nbsp</button>
   </div>
 
-  <div class="search_options" style="width: 175px">
+  <div class="search_options" style="width: 165px; text-align: center;">
+    <button id="refine" type="button" onclick="findSources()" style="padding: 4px;">Refine Search</button>
+    <button id="view" onclick="displayGrid()"><img src="images/grid.png" alt="Grid View" width="16" height="16" > Grid View</button>
+    <button id="view" onclick="displayList()"><img src="images/list.png" alt="List View" width="16" height="16" > List View</button>
     <p><img src="images/calendar.png" alt="Calendar Icon" width="16" height="16"> Date Range</p>
-      <p style="font-size: 14px">Start: <input id="startDate" type="date" ></p>
-      <p style="font-size: 14px">End: <input id="endDate" type="date"></p>
+      <p id="start" style="font-size: 14px; padding: 5px;">Start: <input id="startDate" type="date" placeholder="mm/dd/yy" ></p>
+      <p id="end" style="font-size: 14px; padding: 5px;">End: <input id="endDate" type="date" placeholder="mm/dd/yyyy"></p>
       <div id="locate">
         <p><img src="images/location.png" alt="Location Icon" width="16" height="16"> Location</p>
           <select id="location" style="width: 150px">
@@ -113,12 +115,21 @@
             <option value="2">Large</option>
           </select>
       </div>
-
-    <p><button type="button" onclick="findSources()">Refine Search</button></p>
+      <button id="refine" type="button" onclick="findSources()" style="padding: 4px;">Refine Search</button>
   </div>
 
-<p id="results" style="margin-left: 200px">
-</p>
-
+<p id="search"><img id="rocket" src="images/rocket.gif" alt="rocket"></p>
+<div id="results">
+</div>
+<div>
+  <address id="footer">
+    <strong> Created by: </strong>Erin Hardnett<br>
+    <strong>Email: </strong><a href="mailto:erin.hardnett.7@gmail.com">erin.hardnett.7@gmail.com</a><br>
+    <strong>Phone: </strong>(678) 230-1160<br>
+    <strong>Nasa Image Search </strong>| <strong>March 2018</strong><br>
+  </address>
+</div>
 </body>
+
+
 </html>

@@ -18,6 +18,7 @@ try {
 
 if (sessionAvail == false || localAvail == false) {
   document.getElementById("storage").innerHTML = "<p><strong>NOTICE: This browser does not support a storage component. Because of this, the \'Favorites\' Page will not work. For full capability, use Google Chrome or Firefox.</strong></p>";
+  document.getElementById("favorites").innerHTML = "<h4>Page is not supported for this browser.</h4>"
 } else {
   var favSources = [];
   loadPage();

@@ -1,5 +1,6 @@
 var localAvail;
 var sessionAvail;
+
 try {
   localStorage.setItem('test', "test");
   localStorage.removeItem('test');
@@ -14,6 +15,21 @@ try {
   sessionAvail = true;
 } catch(ex) {
   sessionAvail = false;
+}
+
+var datefield = document.createElement("input")
+
+datefield.setAttribute("type", "date")
+
+if (datefield.type!="date"){
+
+}
+
+function attributes(dateId) {
+  document.getElementById(dateId).type = "text";
+  document.getElementById(dateId).placeholder = "mm/dd/yyyy";
+  document.getElementById(dateId).pattern = "(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d";
+  document.getElementById(dateId).title = "Use format mm/dd/yyyy";
 }
 
 if (sessionAvail == false || localAvail == false) {
@@ -33,22 +49,12 @@ function videoSearch() {
   // take in the user's search for results
   searchInput = document.getElementById("searchBar");
   startInput = document.getElementById("startDate").value;
+  console.log(startInput);
   endInput = document.getElementById("endDate").value;
+  console.log(endInput);
   locationInput = document.getElementById("location").options[document.getElementById("location").selectedIndex].text;
 
-  const Http = new XMLHttpRequest(); //creating a new html for the website
-  // constant url for the api search of nasa images
-  var url;
-  if (locationInput == "Select location...") {
-    url="https://images-api.nasa.gov/search?q=" + encodeURIComponent(searchInput.value) + "&media_type=video";
-  } else {
-    url="https://images-api.nasa.gov/search?q=" + encodeURIComponent(searchInput.value) + "&media_type=video&location=" + encodeURIComponent(locationInput);
-  }
 
-  Http.open("GET", url); // opens the api call to then parse through
-  Http.send(); // sends the request to find any results
-
-  var dateFilter = checkDateRange(startInput, endInput);
   console.log(dateFilter);
   if (dateFilter == null) {
     alert("Invalid Date Range");
@@ -56,87 +62,89 @@ function videoSearch() {
     Http.onreadystatechange=(e)=>{
       var status = Http.status;
       if (status >= 200 && status <= 299){
-  //    var processedResponse = escapeSpecialChars(Http.responseText); // response of the search results from api call
-  //    console.log(processedResponse);
-      obj = JSON.parse(Http.responseText); // parsing throught the api call from url
-      console.log(obj);
+        obj = JSON.parse(Http.responseText); // parsing throught the api call from url
+        console.log(obj);
 
-      document.getElementById("results").innerHTML = "Total Results: " + obj.collection.items.length + " videos<p>";
+        document.getElementById("results").innerHTML = "Total Results: " + obj.collection.items.length + " videos<p>";
 
-      // loop to go through the responses of the url
-      for (var i = 0; i < obj.collection.items.length; i++) {
-        var dateStr = obj.collection.items[i].data[0].date_created;
-        var inRange = checkDate(startInput, endInput, dateStr);
+        // loop to go through the responses of the url
+        for (var i = 0; i < obj.collection.items.length; i++) {
+          var dateStr = obj.collection.items[i].data[0].date_created;
+          var inRange = checkDate(startInput, endInput, dateStr);
 
-        if (dateFilter == false || (dateFilter == true && inRange == true)){
-          var video = document.createElement("IMG");
-          video.setAttribute("src", obj.collection.items[i].links[0].href);
-          video.setAttribute("alt", obj.collection.items[i].data[0].title);
+          if (dateFilter == false || (dateFilter == true && inRange == true)){
+            var video = document.createElement("IMG");
+            video.setAttribute("src", obj.collection.items[i].links[0].href);
+            video.setAttribute("alt", obj.collection.items[i].data[0].title);
 
-          const vid = new XMLHttpRequest();
-          var videoUrl = obj.collection.items[i].href;
-          var videoJson = accessUrl(vid, videoUrl);
-          if (videoJson != undefined) {
-            vidObj = JSON.parse(videoJson);
-            videoUrl = vidObj[0];
-            if (video.src == undefined) {
-              document.getElementById("results").innerHTML += "<a href= " + encodeURI(videoUrl) + "><img id=thumbnail src=images/video-not-found.png></a><p>";
+            const vid = new XMLHttpRequest();
+            var videoUrl = obj.collection.items[i].href;
+            var videoJson = accessUrl(vid, videoUrl);
+            if (videoJson != undefined) {
+              vidObj = JSON.parse(videoJson);
+              videoUrl = vidObj[0];
+              if (video.src == undefined) {
+                document.getElementById("results").innerHTML += "<a href= " + encodeURI(videoUrl) + "><img id=thumbnail src=images/video-not-found.png></a><p>";
+              } else {
+                document.getElementById("results").innerHTML += "<a href= " + encodeURI(videoUrl) + "><img id=thumbnail src=" + video.src + "></a><p>";
+              }
             } else {
-              document.getElementById("results").innerHTML += "<a href= " + encodeURI(videoUrl) + "><img id=thumbnail src=" + video.src + "></a><p>";
+              if (video.src == undefined) {
+                document.getElementById("results").innerHTML += "<img id=thumbnail onclick=unavailable(); src=images/video-not-found.png></a><p>";
+              } else {
+                document.getElementById("results").innerHTML += "<img id=thumbnail onclick=unavailable(); src=" + video.src + "></a><p>";
+              }
             }
-          } else {
-            if (video.src == undefined) {
-              document.getElementById("results").innerHTML += "<img id=thumbnail onclick=unavailable(); src=images/video-not-found.png></a><p>";
-            } else {
-              document.getElementById("results").innerHTML += "<img id=thumbnail onclick=unavailable(); src=" + video.src + "></a><p>";
+            var finalDescription = cutDescription(obj, i);
+
+            var info = {id: dateStr, pic: video.src, title: video.alt, describe: finalDescription, url: videoUrl, thumb: "", heart: "images/heart-gray.png", media: "video", location: obj.collection.items[i].data[0].location, date: obj.collection.items[i].data[0].date_created};
+            var liked = {id: dateStr, pic: video.src, title: video.alt, describe: finalDescription, url: videoUrl, thumb: "", heart: "images/heart-red.png", media: "video", location: obj.collection.items[i].data[0].location, date: obj.collection.items[i].data[0].date_created};
+            if (info.title == undefined) {
+              info.title = "No title available";
+              liked.title = "No title available";
             }
-          }
-          var finalDescription = cutDescription(obj, i);
+            if (localAvail == true) {
+              var inStorage = JSON.parse(localStorage.getItem("list"));
 
-          var info = {id: dateStr, pic: video.src, title: video.alt, describe: finalDescription, url: videoUrl, thumb: "", heart: "images/heart-gray.png", media: "video", location: obj.collection.items[i].data[0].location, date: obj.collection.items[i].data[0].date_created};
-          var liked = {id: dateStr, pic: video.src, title: video.alt, describe: finalDescription, url: videoUrl, thumb: "", heart: "images/heart-red.png", media: "video", location: obj.collection.items[i].data[0].location, date: obj.collection.items[i].data[0].date_created};
-          if (localAvail == true) {
-            var inStorage = JSON.parse(localStorage.getItem("list"));
-
-            if (inStorage != null) {
-              var index = -1;
-              for (var j = 0; j < inStorage.length; j++) {
-                var source = inStorage[j];
-                if (info.id == source.id) {
-                  index = j;
+              if (inStorage != null) {
+                var index = -1;
+                for (var j = 0; j < inStorage.length; j++) {
+                  var source = inStorage[j];
+                  if (info.id == source.id) {
+                    index = j;
+                  }
+                }
+              if (sessionAvail == true) {
+                if (index == -1) {
+                  sessionStorage.setItem(dateStr, JSON.stringify(info));
+                  document.getElementById("results").innerHTML += "<div class=info><strong>" + info.title + "</strong><p><i>" + info.describe + "</i><p><img id=" + info.id +" class=heart src=\"" + info.heart +"\" onclick=addToFavorites(\"" + info.id + "\");></p>";
+                  currentPage.push(info);
+                } else {
+                  sessionStorage.setItem(dateStr, JSON.stringify(liked));
+                  document.getElementById("results").innerHTML += "<div class=info><strong>" + liked.title + "</strong><p><i>" + liked.describe + "</i><p><img id=" + liked.id +" class=heart src=\"" + liked.heart +"\" onclick=addToFavorites(\"" + liked.id + "\");></p>";
+                  currentPage.push(liked);
                 }
               }
-            if (sessionAvail == true) {
-              if (index == -1) {
+            } else {
+              if (sessionAvail == true) {
                 sessionStorage.setItem(dateStr, JSON.stringify(info));
-                document.getElementById("results").innerHTML += "<div class=info><strong>" + info.title + "</strong><p><i>" + info.describe + "</i><p><img id=" + info.id +" class=heart src=\"" + info.heart +"\" onclick=addToFavorites(\"" + info.id + "\");></p>";
+                document.getElementById("results").innerHTML += "<div class=info><strong>" + video.alt + "</strong><p><i>" + finalDescription + "</i><p><img id=" + dateStr +" class=heart src=" + info.heart +" onclick=addToFavorites(\"" + dateStr + "\");></p>";
                 currentPage.push(info);
-              } else {
-                sessionStorage.setItem(dateStr, JSON.stringify(liked));
-                document.getElementById("results").innerHTML += "<div class=info><strong>" + liked.title + "</strong><p><i>" + liked.describe + "</i><p><img id=" + liked.id +" class=heart src=\"" + liked.heart +"\" onclick=addToFavorites(\"" + liked.id + "\");></p>";
-                currentPage.push(liked);
               }
             }
-          } else {
-            if (sessionAvail == true) {
-              sessionStorage.setItem(dateStr, JSON.stringify(info));
-              document.getElementById("results").innerHTML += "<div class=info><strong>" + video.alt + "</strong><p><i>" + finalDescription + "</i><p><img id=" + dateStr +" class=heart src=" + info.heart +" onclick=addToFavorites(\"" + dateStr + "\");></p>";
-              currentPage.push(info);
-            }
-          }
 
-        } else {
-          document.getElementById("results").innerHTML += "<div class=info><strong>" + info.title + "</strong><p><i>" + info.describe + "</i></p>";
-          currentPage.push(info);
-        }
+          } else {
+            document.getElementById("results").innerHTML += "<div class=info><strong>" + info.title + "</strong><p><i>" + info.describe + "</i></p>";
+            currentPage.push(info);
+          }
+      }
     }
-  }
-  sessionStorage.setItem("current", JSON.stringify(currentPage));
-  } else {
-    var code = handleErrors(status);
-    document.getElementById("results") += "<h2>" + code;
-  }
-  }
+    sessionStorage.setItem("current", JSON.stringify(currentPage));
+    } else {
+      var code = handleErrors(status);
+      document.getElementById("results") += "<h2>" + code;
+    }
+    }
 }
 }
 
@@ -168,9 +176,6 @@ function imageSearch() {
   Http.send(); // sends the request to find any results
 
   var dateFilter = checkDateRange(startInput, endInput);
-  console.log(dateFilter);
-  console.log(startInput);
-  console.log(endInput)
   if (dateFilter == null) {
     alert("Invalid Date Range");
   } else {
@@ -223,6 +228,10 @@ function imageSearch() {
 
             var info = {id: obj.collection.items[i].data[0].nasa_id, pic: image.src, title: image.alt, describe: finalDescription, thumb: thumbnails, url: imageUrl, heart: "images/heart-gray.png", media: "image", location: obj.collection.items[i].data[0].location, date: dateStr};
             var liked = {id: obj.collection.items[i].data[0].nasa_id, pic: image.src, title: image.alt, describe: finalDescription, thumb: thumbnails, url: imageUrl, heart: "images/heart-red.png", media: "image", location: obj.collection.items[i].data[0].location, date: dateStr};
+            if (info.title == undefined) {
+              info.title = "No title available";
+              liked.title = "No title available";
+            }
             if (localAvail == true) {
               var inStorage = JSON.parse(localStorage.getItem("list"));
               if (inStorage != null) {
@@ -331,6 +340,10 @@ function audioSearch() {
 
             var info = {id: dateStr, pic: audio.src, title: audio.alt, describe: finalDescription, url: audioUrl, thumb: "", heart: "images/heart-gray.png", media: "audio", location: "", date: dateStr};
             var liked = {id: dateStr, pic: audio.src, title: audio.alt, describe: finalDescription, url: audioUrl, thumb: "", heart: "images/heart-red.png", media: "audio", location: "", date: dateStr};
+            if (info.title == undefined) {
+              info.title = "No title available";
+              liked.title = "No title available";
+            }
             if (localAvail == true) {
               var inStorage = JSON.parse(localStorage.getItem("list"));
               if (inStorage != null) {
@@ -405,13 +418,18 @@ function cutDescription(obj, i) {
 function addThumbnails(obj, i, imageUrl, imageTitles) {
   var str = "";
   var j = i + 1;
-  if (imageTitles[imageTitles.length - 1] == obj.collection.items[j].data[0].title) {
-    str += "More Thumbnails: ";
-    while (imageTitles[imageTitles.length - 1] == obj.collection.items[j].data[0].title) {
-      str += "<a id=more href="+ imageUrl +">Source " + (j - i) + "</a> ";
-      j++;
+  if (obj.collection.items[i].data[0].title != undefined && obj.collection.items[j].data[0].title != undefined) {
+    if (imageTitles[imageTitles.length - 1] == obj.collection.items[j].data[0].title) {
+      str += "More Thumbnails: ";
+      while (imageTitles[imageTitles.length - 1] == obj.collection.items[j].data[0].title) {
+        str += "<a id=more href="+ imageUrl +">Source " + (j - i) + "</a> ";
+        j++;
+        if (obj.collection.items[j].data[0].title == undefined) {
+          break;
+        }
+      }
+      i = j;
     }
-    i = j;
   }
 
   return str;
@@ -434,6 +452,10 @@ function checkDate(startInput, endInput, dateStr) {
 }
 
 function checkDateRange(startInput, endInput) {
+  var start = new Date(startInput.value);
+  var end = new Date(endInput.value);
+  console.log(start);
+  console.log(end);
   if (startInput.value == undefined && endInput.value == undefined) {
     return false;
   } else if (startInput.value == undefined && endInput.value != undefined){
