@@ -234,7 +234,7 @@ function imageSearch() {
           image = document.createElement("img");
           image.setAttribute("src", obj.collection.items[i].links[0].href);
           image.setAttribute("alt", title);
-          if (sizeInput != "Select size") {
+          if (sizeInput != "Select Size...") {
             imageUrl = "http://images-assets.nasa.gov/image/" + encodeURIComponent(nasaId) + "/" + encodeURIComponent(nasaId) + "~" + sizeInput.toLowerCase() + ".jpg";
             document.getElementById("results").innerHTML += "<a href= " + encodeURI(imageUrl) + "><img id=thumbnail src=" + image.src + "></a><p>";
           } else {
@@ -608,9 +608,8 @@ function displayList() {
     }
     for (var i = 0; i < currentPage.length; i++) {
       var info = currentPage[i];
-      var newTitle = changeTitle(info.title);
       document.getElementById("results").innerHTML += "<a href= " + encodeURI(info.url) + "><img id=thumbnail src=" + info.pic + "></a><p>";
-      document.getElementById("results").innerHTML += "<div class=info><strong>" + newTitle + "</strong><p><i>" + info.describe + "</i><p><img id=" + info.id +" class=heart src=\"" + info.heart +"\" onclick=addToFavorites(\"" + info.id + "\");></p>";
+      document.getElementById("results").innerHTML += "<div class=info><strong>" + info.title + "</strong><p><i>" + info.describe + "</i><p><img id=" + info.id +" class=heart src=\"" + info.heart +"\" onclick=addToFavorites(\"" + info.id + "\");></p>";
     }
     document.getElementById("rocket").style.visibility = "hidden";
     inGrid = false;
@@ -618,16 +617,15 @@ function displayList() {
   }
 }
 
-function findSources() {
+function findcurrentPage() {
   var locationInput = document.getElementById("location").options[document.getElementById("location").selectedIndex].text;
-  var startInput = document.getElementById("startDate");
-  var endInput = document.getElementById("endDate");
+  var startInput = document.getElementById("startDate").value;
+  var endInput = document.getElementById("endDate").value;
   var sizeInput = document.getElementById("resize").options[document.getElementById("resize").selectedIndex].text;
   var dateFilter = checkDateRange(startInput, endInput);
-  currentPage = JSON.parse(sessionStorage.getItem("current"));
 
-  if (currentPage != null) {
-    if (locationInput != "Select location") {
+  if (currentPage[0] != undefined) {
+    if (locationInput != "Select location...") {
       for (var i = 0; i < currentPage.length; i++) {
         if (currentPage[i].location != locationInput) {
           currentPage.splice(i, 1);
@@ -646,12 +644,12 @@ function findSources() {
       }
     }
 
-    if (sizeInput != "Select size...") {
+    if (sizeInput != "Select Size...") {
       for (var i = 0; i < currentPage.length; i++) {
         currentPage[i].url = "http://images-assets.nasa.gov/image/"+ currentPage[i].id + "/" + currentPage[i].id + "~" + sizeInput.toLowerCase() +".jpg"
       }
     }
-
+    
     if (inGrid == true) {
       displayGrid();
     } else {

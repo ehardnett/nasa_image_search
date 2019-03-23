@@ -28,11 +28,11 @@
     <button id="view" onclick="displayList()"><img src="images/list.png" alt="List View" width="16" height="16" > List View</button>
     <div id="calendar">
       <p><img src="images/calendar.png" alt="Calendar Icon" width="16" height="16"> Date Range<br><br>
-        Start: <input id="startDate" type="date" placeholder="mm/dd/yy" ><br>
-        End: <input id="endDate" type="date" placeholder="mm/dd/yyyy"></p>
+        Start: <input id="startDate" type="date"><br>
+        End: <input id="endDate" type="date"></p>
     </div>
       <div id="locate">
-        <p><img src="images/location.png" alt="Location Icon" width="16" height="16"> Location</p>
+        <p><img src="images/location.png" alt="Location Icon" width="16" height="16"> Location<br>
           <select id="location" style="width: 150px">
             <option value="select">Select location...</option>
             <option value="0">01726 Hangar S</option>
@@ -107,15 +107,17 @@
             <option value="69">VIF, CX-41, Cape Canaveral Air F</option>
             <option value="70">Walter E. Washington Convention</option>
           </select>
+        </p>
       </div>
       <div id="size">
-        <p><img src="images/resize.png" alt="Size Icon" width="16" height="16"> Image Size</p>
+        <p><img src="images/resize.png" alt="Size Icon" width="16" height="16"> Image Size<br>
           <select id="resize">
             <option value="select">Select Size...</option>
             <option value="0">Small</option>
             <option value="1">Medium</option>
             <option value="2">Large</option>
           </select>
+        </p>
       </div>
       <button id="refine" type="button" onclick="findSources()" style="padding: 4px;">Refine Search</button>
   </div>
