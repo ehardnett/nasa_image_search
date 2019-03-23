@@ -1,6 +1,11 @@
 var localAvail;
 var sessionAvail;
+var dateAvail = true;
 
+/*
+  These two try-catch blocks are to check if there is storage capability in that browser. If there isn't then
+  a warning message will display at the top of the screen.
+*/
 try {
   localStorage.setItem('test', "test");
   localStorage.removeItem('test');
@@ -17,38 +22,64 @@ try {
   sessionAvail = false;
 }
 
-var datefield = document.createElement("input");
-datefield.setAttribute("type", "date");
-var dateAvail;
-
-
+// warning for when storage is not available
 if (sessionAvail == false || localAvail == false) {
   document.getElementById("storage").innerHTML = "<p><strong>NOTICE: This browser does not support a storage component. Because of this, the \'Favorites\' Page will not work. For full capability, use Google Chrome or Firefox.</strong></p>";
 }
 
-if (datefield.type != "date"){
-
+/*
+  This check is for if it is possible for a date to be entered. If so, then that function will be enabled.
+  Otherwise, the input box will be changed for text with a specific pattern.
+*/
+var datefield = document.createElement("input");
+datefield.setAttribute("type", "date");
+if (datefield.type != "date") {
+  dateAvail = false;
 }
 
-var favoriteImgs = [];
-var currentPage = [];
-var inGrid = false;
-var inList = false;
+var favoriteImgs = []; // array to store all favorited images
+var currentPage = []; // array to store the current page informaiton
+var inGrid = false; // checks to see if the display is a grid view
+var inList = false; // checks to see if the display is in list view (default)
 
+/*
+  videoSearch()
+  This is the search for all videos in the NASA database that match the search input.
+  First, it takes in all the inputs from the dates, search, and locations. From there, it
+  generates the url to access the JSON from the NASA Image API. A simple for loop is used to
+  parse through the JSON and get all the information needed to develop my page. Everything is loaded
+  into the "results" div in the document.
+  - NOTE: Videos do not have a difference in their size. Therefore, that function is not available here.
+*/
 function videoSearch() {
-  document.getElementById("size").style.visibility = "hidden";
-  document.getElementById("locate").style.visibility = "visible";
-  document.getElementById("rocket").style.visibility = "visible";
   var searchInput, startInput, endInput, locationInput;
   currentPage = [];
 
+  //changing the input type and patterns of the date inputs
+  if (dateAvail == false){
+    document.getElementById("startDate").type = "text";
+    document.getElementById("startDate").pattern = "(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d";
+    document.getElementById("startDate").title = "Use format mm/dd/yyyy";
+    document.getElementById("endDate").type = "text";
+    document.getElementById("endDate").pattern = "(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d";
+    document.getElementById("endDate").title = "Use format mm/dd/yyyy";
+  }
+
+  //load the appropriate refine search options for video: location and date
+  document.getElementById("calendar").style.visibility = "visible";
+  document.getElementById("size").style.visibility = "hidden";
+  document.getElementById("locate").style.visibility = "visible";
+  document.getElementById("rocket").style.visibility = "visible"; //for loading purposes
+
+  //acquire all the input values for: search, dates, and locations
   searchInput = document.getElementById("searchBar"); //user's search results
   startInput = document.getElementById("startDate").value; //user's start date option
   endInput = document.getElementById("endDate").value; //user's end date option
   locationInput = document.getElementById("location").options[document.getElementById("location").selectedIndex].text; //user's location select
 
   const Http = new XMLHttpRequest(); //creating a new html for the website
-  // constant url for the api search of nasa images
+
+  //get the right url based on if there is a location input or not
   var url;
   if (locationInput == "Select location...") {
     url="https://images-api.nasa.gov/search?q=" + encodeURIComponent(searchInput.value) + "&media_type=video";
@@ -59,7 +90,7 @@ function videoSearch() {
   Http.open("GET", url); // opens the api call to then parse through
   Http.send(); // sends the request to find any results
 
-  var dateFilter = checkDateRange(startInput, endInput);
+  var dateFilter = checkDateRange(startInput, endInput); // check to see if the range is acceptable
   if (dateFilter == null) {
     alert("Invaild Date Range");
   } else {
@@ -67,7 +98,6 @@ function videoSearch() {
       var status = Http.status;
       if (status >= 200 && status <= 299){
         obj = JSON.parse(Http.responseText); // parsing throught the api call from url
-        console.log(obj);
 
         document.getElementById("results").innerHTML = "Total Results: " + obj.collection.items.length + " videos<p>";
 
@@ -77,9 +107,9 @@ function videoSearch() {
           finalDescription = cutDescription(obj, i);
           locationStr = obj.collection.items[i].data[0].location;
           dateStr = obj.collection.items[i].data[0].date_created;
-        //  vidUrl = obj.collection.items[i].links[0].href;
           nasaId = obj.collection.items[i].data[0].nasa_id;
 
+          //check to make sure everything is defined; otherwise assign it a value
           if (title == undefined){
             title = "No title available";
           }
@@ -98,15 +128,17 @@ function videoSearch() {
           video.setAttribute("src", obj.collection.items[i].links[0].href);
           video.setAttribute("alt", title);
           videoUrl = "http://images-assets.nasa.gov/video/" + encodeURIComponent(nasaId) + "/" + encodeURIComponent(nasaId) + "~orig.mp4";
-          document.getElementById("results").innerHTML += "<a href= " + encodeURI(videoUrl) + "><img id=thumbnail src=" + video.src + "></a><p>";
+          document.getElementById("results").innerHTML += "<a href= " + encodeURI(videoUrl) + "><img id=thumbnail src=" + video.src + "></a><p>"; //thumbnail for the source
 
+          //generic info gathered
           var info = {id: JSON.stringify(nasaId), pic: video.src, title: video.alt, describe: finalDescription, thumb: "", heart: "images/heart-gray.png", media: "video", location: locationStr, date: dateStr, url: videoUrl};
+          // the heart source changes in case of the image having been previously saved to favorites
           var liked = {id: JSON.stringify(nasaId), pic: video.src, title: video.alt, describe: finalDescription, thumb: "", heart: "images/heart-red.png", media: "video", location: locationStr, date: dateStr, url: videoUrl};
 
           addToResults(JSON.stringify(info), JSON.stringify(liked));
         }
-        document.getElementById("rocket").style.visibility = "hidden";
-        inList = true;
+        document.getElementById("rocket").style.visibility = "hidden"; //loading is done
+        inList = true; //currently in a list view format
         inGrid = false;
       } else {
         var code = handleErrors(status);
@@ -116,17 +148,42 @@ function videoSearch() {
   }
 }
 
+/*
+  imageSearch()
+  This is the search for all images in the NASA database that match the search input.
+  First, it takes in all the inputs from the dates, search, and locations. From there, it
+  generates the url to access the JSON from the NASA Image API. A simple for loop is used to
+  parse through the JSON and get all the information needed to develop my page. Everything is loaded
+  into the "results" div in the document.
+  - NOTE: if the titles from a previous image match with the next one, then there are smaller
+  thumbnails created to be put next to the first occurrence in the search.
+*/
 function imageSearch() {
+  var searchInput, startInput, endInput, locationInput, sizeInput;
+
+  //changes the date inputs to text if date is not available and adds a required pattern
+  if (dateAvail == false){
+    document.getElementById("startDate").type = "text";
+    document.getElementById("startDate").pattern = "(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d";
+    document.getElementById("startDate").title = "Use format mm/dd/yyyy";
+    document.getElementById("endDate").type = "text";
+    document.getElementById("endDate").pattern = "(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d";
+    document.getElementById("endDate").title = "Use format mm/dd/yyyy";
+  }
+
+  //sets the correct search options to be visible: all of them work for images
+  document.getElementById("calendar").style.visibility = "visible";
   document.getElementById("size").style.visibility = "visible";
   document.getElementById("locate").style.visibility = "visible";
   document.getElementById("rocket").style.visibility = "visible";
-  var searchInput, startInput, endInput, locationInput; // variable for user's search
-  currentPage = [];
+  currentPage = []; //reset current page array
 
+  //obtain the inputs of the
   searchInput = document.getElementById("searchBar"); //user's search results
   startInput = document.getElementById("startDate").value; //user's start date option
   endInput = document.getElementById("endDate").value; //user's end date option
   locationInput = document.getElementById("location").options[document.getElementById("location").selectedIndex].text; //user's location select
+  sizeInput = document.getElementById("resize").options[document.getElementById("resize").selectedIndex].text; //user's size select
 
   const Http = new XMLHttpRequest(); //creating a new html for the website
   // constant url for the api search of nasa images
@@ -177,16 +234,21 @@ function imageSearch() {
           image = document.createElement("img");
           image.setAttribute("src", obj.collection.items[i].links[0].href);
           image.setAttribute("alt", title);
-
-          const img = new XMLHttpRequest();
-          imageJson = accessUrl(img, imageUrl);
-          if (imageJson != undefined) {
-            imgObj = JSON.parse(imageJson);
-            imageUrl = imgObj[0];
+          if (sizeInput != "Select size") {
+            imageUrl = "http://images-assets.nasa.gov/image/" + encodeURIComponent(nasaId) + "/" + encodeURIComponent(nasaId) + "~" + sizeInput.toLowerCase() + ".jpg";
             document.getElementById("results").innerHTML += "<a href= " + encodeURI(imageUrl) + "><img id=thumbnail src=" + image.src + "></a><p>";
           } else {
-            document.getElementById("results").innerHTML += "<img id=thumbnail onclick=unavailable(); src=" + image.src + "></a><p>";
+            const img = new XMLHttpRequest();
+            imageJson = accessUrl(img, imageUrl);
+            if (imageJson != undefined) {
+              imgObj = JSON.parse(imageJson);
+              imageUrl = imgObj[0];
+              document.getElementById("results").innerHTML += "<a href= " + encodeURI(imageUrl) + "><img id=thumbnail src=" + image.src + "></a><p>";
+            } else {
+              document.getElementById("results").innerHTML += "<img id=thumbnail onclick=unavailable(); src=" + image.src + "></a><p>";
+            }
           }
+
 
           if (i < (obj.collection.items.length - 1)) {
             thumbnails += addThumbnails(obj, i, imageUrl, imageTitles);
@@ -208,11 +270,34 @@ function imageSearch() {
   }
 }
 
+/*
+  audioSearch()
+  This is the search for all audio results in the NASA database that match the search input.
+  First, it takes in all the inputs from the dates and search. From there, it
+  generates the url to access the JSON from the NASA Image API. A simple for loop is used to
+  parse through the JSON and get all the information needed to develop my page. Everything is loaded
+  into the "results" div in the document.
+  - NOTE: For audio results, there is no way to sort by location, therefore, that option is disabled.
+  - NOTE: Audio results didn't have a thumbnail to use in the JSON, so a simple audio thumbnail has been
+  set for all results.
+*/
+
 function audioSearch() {
+  var searchInput, startInput, endInput;
+
+  if (dateAvail == false){
+    document.getElementById("startDate").type = "text";
+    document.getElementById("startDate").pattern = "(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d";
+    document.getElementById("startDate").title = "Use format mm/dd/yyyy";
+    document.getElementById("endDate").type = "text";
+    document.getElementById("endDate").pattern = "(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d";
+    document.getElementById("endDate").title = "Use format mm/dd/yyyy";
+  }
+
+  document.getElementById("calendar").style.visibility = "visible";
   document.getElementById("size").style.visibility = "hidden";
   document.getElementById("locate").style.visibility = "hidden";
   document.getElementById("rocket").style.visibility = "visible";
-  var searchInput, startInput, endInput;
   currentPage = [];
 
   searchInput = document.getElementById("searchBar"); //user's search results
@@ -287,6 +372,12 @@ function audioSearch() {
   }
 }
 
+/*
+  handleErrors()
+  From the API, I was able to find the status codes for some errors. In the event of an error in loading the
+  search results, the appropriate message will appear in the "results" id.
+    status: the current status of the url for the request
+*/
 function handleErrors(status) {
   if (status == 400) {
     return "Error 400 - Invalid Request";
@@ -299,6 +390,9 @@ function handleErrors(status) {
   }
 }
 
+/*
+
+*/
 function accessUrl(Http, url) {
   Http.open("GET", url, false);
   Http.send( null );
@@ -390,21 +484,31 @@ function cutDescription(obj, i) {
 }
 
 function checkDateRange(startInput, endInput) {
-  var start = new Date(startInput.value);
-  var end = new Date(endInput.value);
-  console.log(start);
-  console.log(end);
-  if (startInput.value == undefined && endInput.value == undefined) {
-    return false;
-  } else if (startInput.value == undefined && endInput.value != undefined){
-    return null;
-  } else if (startInput.value != undefined && endInput.value == undefined){
-    return null;
-  } else if (startInput.value != undefined && endInput.value != undefined){
-    return true;
-  } else {
-    return null;
+  if (startInput.type == "text" && endInput.type == "text") {
+    const isValidStart = startInput.checkValidity();
+    const isValidEnd = endInput.checkValidity();
+    if (isValidStart == false || isValidEnd == false) {
+      alert(startInput.title);
+      return false;
+    }
   }
+
+  if (startInput != undefined && endInput != undefined) {
+    var start = new Date(startInput.value);
+    var end = new Date(endInput.value);
+    if (startInput.value == undefined && endInput.value == undefined) {
+      return false;
+    } else if (startInput.value == undefined && endInput.value != undefined){
+      return null;
+    } else if (startInput.value != undefined && endInput.value == undefined){
+      return null;
+    } else if (startInput.value != undefined && endInput.value != undefined){
+      return true;
+    } else {
+      return null;
+    }
+  }
+  return false;
 }
 
 function checkDate(startInput, endInput, dateStr) {

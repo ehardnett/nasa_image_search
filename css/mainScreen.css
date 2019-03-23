@@ -145,13 +145,19 @@ li a:hover {
 }
 
 #footer {
-  background-color: #000;
+  background-image: url("https://images.pexels.com/photos/2162/sky-space-dark-galaxy.jpg?cs=srgb&dl=astronomy-constellation-cosmos-2162.jpg&fm=jpg");
   position: absolute;
   width: 100%;
   color: white;
+  padding: 10px;
   font-style: normal;
   font-family: monospace;
   font-size: 14px;
+  text-align: center;
+}
+
+#footer a {
+  color: #99CCFF;
 }
 
 #grid {
@@ -200,4 +206,8 @@ li a:hover {
 
 #startDate, #endDate {
   width: 150px;
+}
+
+#calendar {
+  visibility: hidden;
 }

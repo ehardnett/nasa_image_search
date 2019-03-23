@@ -26,9 +26,11 @@
     <button id="refine" type="button" onclick="findSources()" style="padding: 4px;">Refine Search</button>
     <button id="view" onclick="displayGrid()"><img src="images/grid.png" alt="Grid View" width="16" height="16" > Grid View</button>
     <button id="view" onclick="displayList()"><img src="images/list.png" alt="List View" width="16" height="16" > List View</button>
-    <p><img src="images/calendar.png" alt="Calendar Icon" width="16" height="16"> Date Range</p>
-      <p id="start" style="font-size: 14px; padding: 5px;">Start: <input id="startDate" type="date" placeholder="mm/dd/yy" ></p>
-      <p id="end" style="font-size: 14px; padding: 5px;">End: <input id="endDate" type="date" placeholder="mm/dd/yyyy"></p>
+    <div id="calendar">
+      <p><img src="images/calendar.png" alt="Calendar Icon" width="16" height="16"> Date Range<br><br>
+        Start: <input id="startDate" type="date" placeholder="mm/dd/yy" ><br>
+        End: <input id="endDate" type="date" placeholder="mm/dd/yyyy"></p>
+    </div>
       <div id="locate">
         <p><img src="images/location.png" alt="Location Icon" width="16" height="16"> Location</p>
           <select id="location" style="width: 150px">
