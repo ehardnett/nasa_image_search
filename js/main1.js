@@ -395,7 +395,7 @@ function handleErrors(status) {
 */
 function accessUrl(Http, url) {
   Http.open("GET", url, false);
-  Http.send( null );
+  Http.send();
   if (Http.status >= 200 && Http.status <= 299) {
     return Http.responseText;
   }
