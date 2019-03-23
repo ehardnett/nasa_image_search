@@ -679,7 +679,11 @@ function displayGrid() {
     for (var i = 0; i < currentPage.length; i++) {
       var info = currentPage[i];
       var newTitle = changeTitle(info.title);
-      document.getElementById("results").innerHTML += "<div class=gridView <a href= " + encodeURI(info.url) + "><img id=grid src=" + info.pic + "></a><strong>" + newTitle + " </strong><img id=" + info.id + " class=heart src=" + info.heart + " onclick=addToFavorites(\'" + JSON.stringify(info.id) +"\')>";
+      if (localAvail == true) {
+        document.getElementById("results").innerHTML += "<div class=gridView <a href= " + encodeURI(info.url) + "><img id=grid src=" + info.pic + "></a><strong>" + newTitle + " </strong><img id=" + info.id + " class=heart src=" + info.heart + " onclick=addToFavorites(\'" + JSON.stringify(info.id) +"\')>";
+      } else {
+        document.getElementById("results").innerHTML += "<div class=gridView <a href= " + encodeURI(info.url) + "><img id=grid src=" + info.pic + "></a><strong>" + newTitle + " </strong>";
+      }
 
     }
     document.getElementById("rocket").style.visibility = "hidden";
@@ -710,7 +714,11 @@ function displayList() {
     for (var i = 0; i < currentPage.length; i++) {
       var info = currentPage[i];
       document.getElementById("results").innerHTML += "<a href= " + encodeURI(info.url) + "><img id=thumbnail src=" + info.pic + "></a><p>";
-      document.getElementById("results").innerHTML += "<div class=info><strong>" + info.title + "</strong><p><i>" + info.describe + "</i><p><img id=" + info.id +" class=heart src=\"" + info.heart +"\" onclick=addToFavorites(\"" + JSON.stringify(info.id) + "\");></p>";
+      if (localAvail == true) {
+        document.getElementById("results").innerHTML += "<div class=info><strong>" + info.title + "</strong><p><i>" + info.describe + "</i><p><img id=" + info.id +" class=heart src=\"" + info.heart +"\" onclick=addToFavorites(\"" + JSON.stringify(info.id) + "\");></p>";
+      } else {
+        document.getElementById("results").innerHTML += "<div class=info><strong>" + info.title + "</strong><p><i>" + info.describe + "</i></p>";
+      }
     }
     document.getElementById("rocket").style.visibility = "hidden";
     inGrid = false;
