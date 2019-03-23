@@ -652,11 +652,12 @@ function addToFavorites(nasaId){
 }
 
 function remove(nasaId) {
+  var id = JSON.parse(nasaId);
   favoriteImgs = JSON.parse(localStorage.getItem("list"));
   var index = -1;
   for (var i = 0; i < favoriteImgs.length; i++) {
     var source = JSON.parse(favoriteImgs[i]);
-    if (nasaId == source.id) {
+    if (id == source.id) {
       source.heart = "images/heart-gray.png";
       index = i;
     }
