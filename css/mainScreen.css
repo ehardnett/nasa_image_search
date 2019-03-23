@@ -88,7 +88,7 @@ li a:hover {
 
 }
 
-.search_options {
+#search_options {
   margin-top: 200px;
   width: 150px;
   position: fixed;
@@ -99,11 +99,11 @@ li a:hover {
   overflow-x: hidden;
   padding-top: 20px;
   margin-bottom: 125px;
-  overflow: auto;
-  height: 300px;
+  height: 400px;
+  visibility: hidden;
 }
 
-.search_options p {
+#search_options p {
   padding: 2px 8px 2px 16px;
   text-decoration: none;
   font-family: monospace;
@@ -112,7 +112,7 @@ li a:hover {
   display: block;
 }
 
-.search_options img:hover {
+#search_options img:hover {
   cursor: pointer;
 }
 
