@@ -641,7 +641,7 @@ function changeTitle(title) {
   if (title.length > 50) {
     final = title.substr(0, 50) + "...";
   } else {
-    final = description;
+    final = title;
   }
 
   return final;
