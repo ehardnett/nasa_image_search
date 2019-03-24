@@ -60,9 +60,11 @@ function videoSearch() {
     document.getElementById("startDate").type = "text";
     document.getElementById("startDate").pattern = "(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d";
     document.getElementById("startDate").title = "Use format mm/dd/yyyy";
+    document.getElementById("startDate").placeholder = "mm/dd/yyyy";
     document.getElementById("endDate").type = "text";
     document.getElementById("endDate").pattern = "(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d";
     document.getElementById("endDate").title = "Use format mm/dd/yyyy";
+    document.getElementById("endDate").placeholder = "mm/dd/yyyy";
   }
 
   //load the appropriate refine search options for video: location and date
@@ -125,7 +127,6 @@ function videoSearch() {
           video.setAttribute("src", obj.collection.items[i].links[0].href);
           video.setAttribute("alt", title);
           videoUrl = "http://images-assets.nasa.gov/video/" + encodeURIComponent(nasaId) + "/" + encodeURIComponent(nasaId) + "~orig.mp4";
-          document.getElementById("results").innerHTML += "<a href= " + encodeURI(videoUrl) + "><img id=thumbnail src=" + video.src + "></a><p>"; //thumbnail for the source
 
           //generic info gathered
           var info = {id: dateStr, pic: video.src, title: video.alt, describe: finalDescription,  heart: "images/heart-gray.png", media: "video", location: locationStr, date: dateStr, url: videoUrl};
@@ -161,9 +162,11 @@ function imageSearch() {
     document.getElementById("startDate").type = "text";
     document.getElementById("startDate").pattern = "(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d";
     document.getElementById("startDate").title = "Use format mm/dd/yyyy";
+    document.getElementById("startDate").placeholder = "mm/dd/yyyy";
     document.getElementById("endDate").type = "text";
     document.getElementById("endDate").pattern = "(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d";
     document.getElementById("endDate").title = "Use format mm/dd/yyyy";
+    document.getElementById("endDate").placeholder = "mm/dd/yyyy";
   }
 
   //sets the correct search options to be visible: all of them work for images
@@ -265,9 +268,11 @@ function audioSearch() {
     document.getElementById("startDate").type = "text";
     document.getElementById("startDate").pattern = "(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d";
     document.getElementById("startDate").title = "Use format mm/dd/yyyy";
+    document.getElementById("startDate").placeholder = "mm/dd/yyyy";
     document.getElementById("endDate").type = "text";
     document.getElementById("endDate").pattern = "(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d";
     document.getElementById("endDate").title = "Use format mm/dd/yyyy";
+    document.getElementById("endDate").placeholder = "mm/dd/yyyy";
   }
 
   // sets the proper search options to be visible for an audio source
