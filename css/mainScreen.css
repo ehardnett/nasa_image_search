@@ -1,37 +1,15 @@
-button:hover {
-  cursor: pointer;
+/*
+  Styling for the notice warning if storage is not available
+*/
+#storage {
+  text-align: center;
+  background-color: #FFFACD;
 }
 
-#searchBar {
-  background-position: 10px 12px;
-  background-repeat: no-repeat;
-  width: 70%;
-  font-size: 16px;
-  padding: 18px 20px 15px 40px;
-  border: 1px solid #ddd;
-  margin-bottom: 12px;
-  display: block;
-  margin-left: 200px;
-  margin: 0 auto;
-}
 
-.search button {
-  background-color: #000000;
-  border: none;
-  margin-right: 10px;
-  font-size: 16px;
-  color: white;
-  padding: 2px;
-  margin-top: 5px;
-  border-radius: 12px;
-  margin-bottom: 5px;
-  font-family: monospace;
-}
-
-#demo img {
-  border-radius: 12px;
-}
-
+/*
+  Styling for the navigation bar and title of the page.
+*/
 h2 {
   text-align: center;
   font-family: monospace;
@@ -63,6 +41,66 @@ li a:hover {
   background-color: #4682b4;
 }
 
+
+/*
+  Styling for the search buttons (images, videos, and audios)
+*/
+#demo img {
+  border-radius: 12px;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+#searchBar {
+  background-position: 10px 12px;
+  background-repeat: no-repeat;
+  width: 70%;
+  font-size: 16px;
+  padding: 18px 20px 15px 40px;
+  border: 1px solid #ddd;
+  margin-bottom: 12px;
+  display: block;
+  margin-left: 200px;
+  margin: 0 auto;
+}
+
+.search button {
+  background-color: #000000;
+  border: none;
+  margin-right: 10px;
+  font-size: 16px;
+  color: white;
+  padding: 2px;
+  margin-top: 5px;
+  border-radius: 12px;
+  margin-bottom: 5px;
+  font-family: monospace;
+}
+
+
+/*
+  Styling for the search results
+*/
+#rocket {
+  width: 50px;
+  height: 50px;
+  visibility: hidden;
+}
+
+#results {
+  display: block;
+  margin-left: 200px;
+  margin-bottom: 100px;
+  padding-bottom: 100px;
+  height: auto;
+}
+
+#search {
+  text-align: center;
+}
+
 #thumbnail {
   float: left;
   margin-right: 10px;
@@ -87,9 +125,21 @@ li a:hover {
   margin-right: 100px;
 }
 
+.heart {
+  width: 40px;
+  height: 40px;
+}
+
+.heart:hover {
+  cursor: pointer;
+}
+
+
+/*
+  Styling for the refine search options
+*/
 #location {
   width: 150px;
-
 }
 
 #search_options {
@@ -120,50 +170,31 @@ li a:hover {
   cursor: pointer;
 }
 
-.heart {
-  width: 40px;
-  height: 40px;
-}
-
-.heart:hover {
-  cursor: pointer;
-}
-
 #locate {
   visibility: hidden;
 }
 
-#storage {
-  text-align: center;
-  background-color: #FFFACD;
+#refine {
+  border-radius: 5px;
+  border: solid gray 2px;
+  background-color: white;
+  color: black;
+  font-family: monospace;
+  margin: 10px;
 }
 
-#rocket {
-  width: 50px;
-  height: 50px;
+#startDate, #endDate {
+  width: 100px;
+}
+
+#calendar {
   visibility: hidden;
 }
 
-#search {
-  text-align: center;
-}
 
-#footer {
-  background-image: url("https://images.pexels.com/photos/2162/sky-space-dark-galaxy.jpg?cs=srgb&dl=astronomy-constellation-cosmos-2162.jpg&fm=jpg");
-  position: absolute;
-  width: 100%;
-  color: white;
-  padding: 10px;
-  font-style: normal;
-  font-family: monospace;
-  font-size: 14px;
-  text-align: center;
-}
-
-#footer a {
-  color: #99CCFF;
-}
-
+/*
+  Styling for grid view
+*/
 #grid {
   margin-right: 10px;
   border: solid black 1px;
@@ -182,14 +213,6 @@ li a:hover {
   text-align: center;
 }
 
-#results {
-  display: block;
-  margin-left: 200px;
-  margin-bottom: 100px;
-  padding-bottom: 100px;
-  height: auto;
-}
-
 #view {
   background-color: inherit;
   color: white;
@@ -200,19 +223,22 @@ li a:hover {
   align-content: center;
 }
 
-#refine {
-  border-radius: 5px;
-  border: solid gray 2px;
-  background-color: white;
-  color: black;
+
+/*
+  Styling for footer
+*/
+#footer {
+  background-image: url("https://images.pexels.com/photos/2162/sky-space-dark-galaxy.jpg?cs=srgb&dl=astronomy-constellation-cosmos-2162.jpg&fm=jpg");
+  position: absolute;
+  width: 100%;
+  color: white;
+  padding: 10px;
+  font-style: normal;
   font-family: monospace;
-  margin: 10px;
+  font-size: 14px;
+  text-align: center;
 }
 
-#startDate, #endDate {
-  width: 100px;
-}
-
-#calendar {
-  visibility: hidden;
+#footer a {
+  color: #99CCFF;
 }
