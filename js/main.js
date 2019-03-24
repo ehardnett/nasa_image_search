@@ -634,7 +634,7 @@ function displayGrid() {
   changeTitle()
   For the sake of the grid viewing, if the title is too long, then it is shortened to
   50 characters so it doesn't run into one of the other grids.
-    - title: title of the current source being looked at
+    - title: title of the current source being looked at 
 */
 function changeTitle(title) {
   var final;
