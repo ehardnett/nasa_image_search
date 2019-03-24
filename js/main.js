@@ -461,7 +461,7 @@ function checkArray(info, arr) {
   addToIndex()
   This helper function is used to finally build the page after all the necessary information for
   each source is attained. The default view for this function is a list view with all the descriptions
-    - info: generic information about the source
+    - info: generic information about the source 
 */
 function addToIndex(info) {
   var arr = JSON.parse(info);
