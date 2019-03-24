@@ -465,17 +465,15 @@ function checkArray(info, arr) {
 */
 function addToIndex(info) {
   var arr = JSON.parse(info);
-  var index = checkArray(info, JSON.stringify(currentPage)); //determine id the info is already on the screen
   var idStr = JSON.stringify(arr.id);
-  if (index == -1) {
-    if (arr.url != undefined) {
-      document.getElementById("results").innerHTML += "<a href= " + encodeURI(arr.url) + "><img id=thumbnail src=" + arr.pic + "></a><p>";
-    } else {
-      document.getElementById("results").innerHTML += "<img id=thumbnail onclick=unavailable(); src=" + arr.pic + "></a><p>";
-    }
-    document.getElementById("results").innerHTML += "<div class=info><strong>" + arr.title + "</strong><p><i>" + arr.describe + "</i><p><img id=" + idStr +" class=heart src=\"" + arr.heart +"\" onclick=addToFavorites(" + idStr + ");></p>";
-    currentPage.push(arr);
+  if (arr.url != undefined) {
+    document.getElementById("results").innerHTML += "<a href= " + encodeURI(arr.url) + "><img id=thumbnail src=" + arr.pic + "></a><p>";
+  } else {
+    document.getElementById("results").innerHTML += "<img id=thumbnail onclick=unavailable(); src=" + arr.pic + "></a><p>";
   }
+  document.getElementById("results").innerHTML += "<div class=info><strong>" + arr.title + "</strong><p><i>" + arr.describe + "</i><p><img id=" + idStr +" class=heart src=\"" + arr.heart +"\" onclick=addToFavorites(" + idStr + ");></p>";
+  currentPage.push(arr);
+
 }
 
 /*
@@ -634,7 +632,7 @@ function displayGrid() {
   changeTitle()
   For the sake of the grid viewing, if the title is too long, then it is shortened to
   50 characters so it doesn't run into one of the other grids.
-    - title: title of the current source being looked at 
+    - title: title of the current source being looked at
 */
 function changeTitle(title) {
   var final;
