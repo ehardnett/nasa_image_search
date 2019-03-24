@@ -1,3 +1,7 @@
+button:hover {
+  cursor: pointer;
+}
+
 #searchBar {
   background-position: 10px 12px;
   background-repeat: no-repeat;
@@ -125,7 +129,7 @@ li a:hover {
   cursor: pointer;
 }
 
-#size, #locate {
+#locate {
   visibility: hidden;
 }
 
