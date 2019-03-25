@@ -134,6 +134,7 @@ function videoSearch() {
           var liked = {id: dateStr, pic: video.src, title: video.alt, describe: finalDescription,  heart: "images/heart-red.png", media: "video", location: locationStr, date: dateStr, url: videoUrl};
 
           addToResults(JSON.stringify(info), JSON.stringify(liked));
+
         }
         document.getElementById("rocket").style.visibility = "hidden"; //loading is done
         inList = true; //currently in a list view format
@@ -235,6 +236,7 @@ function imageSearch() {
           var liked = {id: nasaId, pic: image.src, title: image.alt, describe: finalDescription, heart: "images/heart-red.png", media: "image", location: locationStr, date: dateStr, url: ""};
 
           const img = new XMLHttpRequest();
+
           accessUrl(img, imgUrl, JSON.stringify(info), JSON.stringify(liked));
         }
 
@@ -335,7 +337,6 @@ function audioSearch() {
           var liked = {id: dateStr, pic: audio.src, title: audio.alt, describe: finalDescription, heart: "images/heart-red.png", media: "audio",  location: locationStr, date: dateStr, url: ""};
 
           accessUrl(aud, audUrl, JSON.stringify(info), JSON.stringify(liked));
-
         }
         inList = true;
         inGrid = false;
@@ -376,6 +377,7 @@ function handleErrors(status) {
     - liked: array of information with a red heart instead of a gray heart
 */
 function accessUrl(Http, url, info, liked) {
+
   Http.open("GET", url, true);
   Http.send();
 
@@ -390,10 +392,12 @@ function accessUrl(Http, url, info, liked) {
         url = obj[0];
         information.url = url;
         likedInfo.url = url;
+
         var inResults = checkArray(info, JSON.stringify(currentPage));
         if (inResults == -1) {
           addToResults(JSON.stringify(information), JSON.stringify(likedInfo));
         }
+
       }
     }
   }
@@ -523,7 +527,6 @@ function checkDateRange(startInput, endInput) {
   } else {
     return true;
   }
-
 }
 /*
   checkDate()
