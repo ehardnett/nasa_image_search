@@ -133,7 +133,17 @@ function videoSearch() {
           // the heart source changes in case of the image having been previously saved to favorites
           var liked = {id: dateStr, pic: video.src, title: video.alt, describe: finalDescription,  heart: "images/heart-red.png", media: "video", location: locationStr, date: dateStr, url: videoUrl};
 
-          addToResults(JSON.stringify(info), JSON.stringify(liked));
+          var inRange;
+          if (dateFilter == true) {
+            console.log("checking date");
+            inRange = checkDate(startInput, endInput, dateStr);
+            console.log(inRange + " " + dateStr);
+            if (inRange == true) {
+              addToResults(JSON.stringify(info), JSON.stringify(liked));
+            }
+          } else {
+            addToResults(JSON.stringify(info), JSON.stringify(liked));
+          }
         }
         document.getElementById("rocket").style.visibility = "hidden"; //loading is done
         inList = true; //currently in a list view format
@@ -235,7 +245,8 @@ function imageSearch() {
           var liked = {id: nasaId, pic: image.src, title: image.alt, describe: finalDescription, heart: "images/heart-red.png", media: "image", location: locationStr, date: dateStr, url: ""};
 
           const img = new XMLHttpRequest();
-          accessUrl(img, imgUrl, JSON.stringify(info), JSON.stringify(liked));
+
+          accessUrl(img, imgUrl, JSON.stringify(info), JSON.stringify(liked), dateFilter);
         }
 
         document.getElementById("rocket").style.visibility = "hidden"; //loading is complete
@@ -334,8 +345,7 @@ function audioSearch() {
           // information about the liked version of the result to see if it is in localStorage
           var liked = {id: dateStr, pic: audio.src, title: audio.alt, describe: finalDescription, heart: "images/heart-red.png", media: "audio",  location: locationStr, date: dateStr, url: ""};
 
-          accessUrl(aud, audUrl, JSON.stringify(info), JSON.stringify(liked));
-
+          accessUrl(aud, audUrl, JSON.stringify(info), JSON.stringify(liked), dateFilter);
         }
         inList = true;
         inGrid = false;
@@ -375,7 +385,8 @@ function handleErrors(status) {
     - info: array of generic information for the source
     - liked: array of information with a red heart instead of a gray heart
 */
-function accessUrl(Http, url, info, liked) {
+function accessUrl(Http, url, info, liked, dateFilter) {
+
   Http.open("GET", url, true);
   Http.send();
 
@@ -390,9 +401,27 @@ function accessUrl(Http, url, info, liked) {
         url = obj[0];
         information.url = url;
         likedInfo.url = url;
-        var inResults = checkArray(info, JSON.stringify(currentPage));
-        if (inResults == -1) {
-          addToResults(JSON.stringify(information), JSON.stringify(likedInfo));
+        var startInput = document.getElementById("startDate");
+        var endInput = document.getElementById("endDate");
+      
+        var inRange;
+        if (dateFilter == true) {
+          console.log("checking date");
+          var dateStr = JSON.stringify(information.date);
+          inRange = checkDate(startInput, endInput, dateStr);
+          console.log(inRange + " " + dateStr);
+          if (inRange == true) {
+            console.log("passed");
+            var inResults = checkArray(info, JSON.stringify(currentPage));
+            if (inResults == -1) {
+              addToResults(JSON.stringify(information), JSON.stringify(likedInfo));
+            }
+          }
+        } else {
+          var inResults = checkArray(info, JSON.stringify(currentPage));
+          if (inResults == -1) {
+            addToResults(JSON.stringify(information), JSON.stringify(likedInfo));
+          }
         }
       }
     }
@@ -523,7 +552,6 @@ function checkDateRange(startInput, endInput) {
   } else {
     return true;
   }
-
 }
 /*
   checkDate()
